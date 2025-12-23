@@ -19,9 +19,9 @@ config.lr = 0.1
 config.verbose = 2000
 config.dali = False
 
-config.rec = "/train_tmp/ms1m-retinaface-t1"
-config.num_classes = 93431
-config.num_image = 5179510
+config.rec = "/home/jamal/MegaSec/FaceReceg/insightface/datasets/ms1m-retinaface-t1/train"
+config.num_classes = 93516
+config.num_image = 5184020
 config.num_epoch = 20
 config.warmup_epoch = 0
 config.val_targets = ['lfw', 'cfp_fp', "agedb_30"]

@@ -101,3 +101,43 @@ ENV/
 .mypy_cache/
 
 .DS_Store
+
+# ======================
+# Models
+# ======================
+*.pt
+*.pth
+*.onnx
+*.ckpt
+*.bin
+models/
+checkpoints/
+
+# ======================
+# Datasets
+# ======================
+datasets/
+data/
+ms1m*
+faces_emore/
+lfw/
+cfp*
+agedb*
+
+# ======================
+# Training outputs
+# ======================
+runs/
+logs/
+wandb/
+tensorboard/
+output/
+experiments/
+
+# ======================
+# Cache / misc
+# ======================
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+

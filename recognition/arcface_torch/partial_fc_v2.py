@@ -137,6 +137,10 @@ class PartialFC_V2(torch.nn.Module):
             torch.zeros(batch_size).long().cuda() for _ in range(self.world_size)
         ]
         _list_embeddings = AllGather(local_embeddings, *_gather_embeddings)
+        
+        if local_labels.device.type == 'cpu':
+            local_labels = local_labels.cuda()
+
         distributed.all_gather(_gather_labels, local_labels)
 
         embeddings = torch.cat(_list_embeddings)

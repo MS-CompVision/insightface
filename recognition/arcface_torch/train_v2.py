@@ -158,10 +158,11 @@ def main(args):
         num_space = 25 - len(key)
         logging.info(": " + key + " " * num_space + str(value))
 
-    callback_verification = CallBackVerification(
-        val_targets=cfg.val_targets, rec_prefix=cfg.rec, 
-        summary_writer=summary_writer, wandb_logger = wandb_logger
-    )
+    callback_verification = None
+#    callback_verification = CallBackVerification(
+#        val_targets=cfg.val_targets, rec_prefix=cfg.rec, 
+#        summary_writer=summary_writer, wandb_logger = wandb_logger
+#    )
     callback_logging = CallBackLogging(
         frequent=cfg.frequent,
         total_step=cfg.total_step,
@@ -171,7 +172,7 @@ def main(args):
     )
 
     loss_am = AverageMeter()
-    amp = torch.cuda.amp.grad_scaler.GradScaler(growth_interval=100)
+    amp = torch.amp.grad_scaler.GradScaler('cuda', growth_interval=100)
 
     for epoch in range(start_epoch, cfg.num_epoch):
 
@@ -211,7 +212,8 @@ def main(args):
                 callback_logging(global_step, loss_am, epoch, cfg.fp16, lr_scheduler.get_last_lr()[0], amp)
 
                 if global_step % cfg.verbose == 0 and global_step > 0:
-                    callback_verification(global_step, backbone)
+                    if callback_verification:
+                        callback_verification(global_step, backbone)
 
         if cfg.save_all_states:
             checkpoint = {
