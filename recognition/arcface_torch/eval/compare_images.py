@@ -3,6 +3,10 @@ import cv2
 import torch
 import numpy as np
 from pathlib import Path
+import os
+
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, ROOT)
 
 from backbones import get_model
 
@@ -99,7 +103,7 @@ def main():
     img1_path = Path(sys.argv[1])
     img2_path = Path(sys.argv[2]) if len(sys.argv) == 3 else None
 
-    model = load_backbone("work_dirs/ms1mv3_r100/model.pt")
+    model = load_backbone("../work_dirs/ms1mv3_r100/model.pt")
 
     img1_tensor, img1_raw = preprocess(img1_path)
     emb1 = get_embedding(model, img1_tensor)
