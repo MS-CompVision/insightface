@@ -55,49 +55,11 @@ def get_embedding(model, img_tensor):
         emb = torch.nn.functional.normalize(emb)
     return emb.squeeze(0)
 
-
-def cosine_similarity(e1, e2):
-    return torch.dot(e1, e2).item()
-    
-
-def resize_keep_aspect(img, target_h=512):
-    h, w = img.shape[:2]
-    scale = target_h / h
-    new_w = int(w * scale)
-    return cv2.resize(img, (new_w, target_h), interpolation=cv2.INTER_AREA)
-
-
-def show_side_by_side(img1, img2, similarity):
-    # Resize both images to height 512 while keeping aspect ratio
-    img1 = resize_keep_aspect(img1, 512)
-    img2 = resize_keep_aspect(img2, 512)
-
-    # If channel mismatch (just in case)
-    if img1.ndim == 2:
-        img1 = cv2.cvtColor(img1, cv2.COLOR_GRAY2BGR)
-    if img2.ndim == 2:
-        img2 = cv2.cvtColor(img2, cv2.COLOR_GRAY2BGR)
-
-    combined = np.hstack([img1, img2])
-
-    caption = f"Cosine similarity: {similarity:.4f}"
-
-    cv2.imshow(caption, combined)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-
-
 # -------------------------
 # Main
 # -------------------------
 def main():
-    if len(sys.argv) != 3:
-        print("Usage:")
-        print("  python compare_images.py image1.jpg image2.jpg")
-        sys.exit(1)
-
     img1_path = Path(sys.argv[1])
-    img2_path = Path(sys.argv[2])
 
     model = load_backbone("../work_dirs/ms1mv3_r100/model.pt")
 
@@ -106,18 +68,6 @@ def main():
 
     #print(f"Embedding (image 1): shape={emb1.shape}")
     print(emb1.cpu().numpy())
-
-    img2_tensor, img2_raw = preprocess(img2_path)
-    emb2 = get_embedding(model, img2_tensor)
-
-    #print(f"Embedding (image 2): shape={emb2.shape}")
-    print(emb2.cpu().numpy())
-
-    sim = cosine_similarity(emb1, emb2)
-    print(f"\nCosine similarity: {sim:.4f}")
-
-    show_side_by_side(img1_raw, img2_raw, sim)
-
 
 if __name__ == "__main__":
     main()
