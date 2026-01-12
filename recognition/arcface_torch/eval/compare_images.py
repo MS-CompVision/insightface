@@ -15,6 +15,7 @@ from backbones import get_model
 # -------------------------
 IMAGE_SIZE = (112, 112)
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+print('Device: ',DEVICE)
 
 
 # -------------------------
@@ -58,6 +59,13 @@ def get_embedding(model, img_tensor):
 
 def cosine_similarity(e1, e2):
     return torch.dot(e1, e2).item()
+
+def euclidean_distance(e1, e2):
+    return torch.norm(e1 - e2).item()
+
+def l2_similarity(e1, e2):
+    distance = euclidean_distance(e1, e2)
+    return 1 - (distance / 2)
     
 
 def resize_keep_aspect(img, target_h=512):
@@ -105,18 +113,19 @@ def main():
     emb1 = get_embedding(model, img1_tensor)
 
     #print(f"Embedding (image 1): shape={emb1.shape}")
-    print(emb1.cpu().numpy())
+    # print(emb1.cpu().numpy())
 
     img2_tensor, img2_raw = preprocess(img2_path)
     emb2 = get_embedding(model, img2_tensor)
 
     #print(f"Embedding (image 2): shape={emb2.shape}")
-    print(emb2.cpu().numpy())
+    # print(emb2.cpu().numpy())
 
-    sim = cosine_similarity(emb1, emb2)
-    print(f"\nCosine similarity: {sim:.4f}")
+    sim1 = cosine_similarity(emb1, emb2)
+    sim2 = euclidean_distance(emb1, emb2)
 
-    show_side_by_side(img1_raw, img2_raw, sim)
+    show_side_by_side(img1_raw, img2_raw, sim1)
+    print(f"\nEuclidian similarity: {sim2:.4f}")
 
 
 if __name__ == "__main__":
