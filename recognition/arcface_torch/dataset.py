@@ -21,16 +21,17 @@ class FaceDataset(Dataset):
                 if fname.lower().endswith((".jpg", ".jpeg", ".png")):
                     self.samples.append((os.path.join(full, fname), idx))
 
+
+        # CCTV / Surveillance Scenario: occlusion, low-res, motion blur, partial faces
         self.transform = transforms.Compose([
             transforms.RandomResizedCrop(self.img_size, scale=(0.85, 1.0)),
-            transforms.RandomHorizontalFlip(),
-            transforms.RandomRotation(10),
-            transforms.ColorJitter(brightness=0.3, contrast=0.3, saturation=0.2, hue=0.05),
-            transforms.RandomGrayscale(p=0.1),
-            transforms.GaussianBlur(3, sigma=(0.1, 1.5)),
+            transforms.RandomHorizontalFlip(p=0.5),
+            transforms.RandomRotation(degrees=10),
+            transforms.ColorJitter(brightness=0.3, contrast=0.3, saturation=0.15, hue=0.03),
+            transforms.GaussianBlur(kernel_size=3, sigma=(0.2, 1.5)),
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.5,0.5,0.5], std=[0.5,0.5,0.5]),
-            transforms.RandomErasing(p=0.3, scale=(0.02, 0.15), ratio=(0.3, 3.3))
+            transforms.RandomErasing(p=0.3, scale=(0.03, 0.2), ratio=(0.3, 3.0))
         ])
 
         print(f"[dataset] Found {len(self.samples)} images across {len(self.class_to_idx)} identities in {root_dir}")
